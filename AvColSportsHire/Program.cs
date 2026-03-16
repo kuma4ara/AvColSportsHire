@@ -1,4 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using AvColSportsHire.Areas.Identity.Data;
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("SportsHireContextConnection") ?? throw new InvalidOperationException("Connection string 'SportsHireContextConnection' not found.");;
+
+builder.Services.AddDbContext<SportsHireContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<SportsHireUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<SportsHireContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -19,7 +27,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
-
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
