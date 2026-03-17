@@ -17,7 +17,14 @@ namespace AvColSportsHire.Models
         [MinLength(0)]
         [Display(Name = "Quantity Available")]
         public int QuantityAvailable { get; set; }
-        public enum ConditionStatus
+        public enum Condition
+        {
+            Availiable,
+            Booked,
+            Damaged,
+            Maintanence
+        }
+
 
 
     }
