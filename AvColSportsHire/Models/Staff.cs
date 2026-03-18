@@ -3,12 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AvColSportsHire.Models
 {
-    public class Customer : SportsHireUser
+    public class Staff : SportsHireUser
     {
-
-        public int CustomerId { get; set; }
-        public int? OrganizationId { get; set; }
-        public Organization Organization { get; set; }
+        public int StaffId { get; set; }
         [Required]
         [StringLength(100)]
         [Display(Name = "First Name")]
@@ -23,10 +20,18 @@ namespace AvColSportsHire.Models
         public string FullName => $"{FirstName} {LastName}";
         [StringLength(20)]
         public string? Phone { get; set; }
+        public enum Role
+        {
+            Admin,
+            Teacher,
+            Coach,
+            SportsManager,
+        }
         [Required]
         [StringLength(255)]
         public string PasswordHash { get; set; }
         public bool IsActive { get; set; }
-       
+
     }
 }
+
