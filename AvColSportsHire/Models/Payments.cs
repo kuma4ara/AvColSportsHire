@@ -7,9 +7,11 @@ namespace AvColSportsHire.Models
     public class Payments
     {
         public int PaymentId { get; set; }
+        [ForeignKey("BookingId")]
         public int BookingId { get; set; }
         public Booking Booking { get; set; }
         [Column(TypeName = "decimal(10,2)")]
+        [ForeignKey("Amount")]
         public decimal Amount { get; set; }
         public enum PaymentMethod
         {

@@ -25,5 +25,11 @@ namespace AvColSportsHire.Models
         [DataType(DataType.DateTime)]
         [Column(TypeName = "datetime2")]
         public DateTime? ChangedAt { get; set; } = DateTime.Now;
+
+        public ICollection<Booking> Bookings { get; set; }
     }
+
 }
+
+
+

@@ -9,5 +9,9 @@ namespace AvColSportsHire.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the SportsHireUser class
 public class SportsHireUser : IdentityUser
 {
+    public int UserId { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    
 }
 

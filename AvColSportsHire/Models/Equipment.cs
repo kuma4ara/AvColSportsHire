@@ -25,7 +25,7 @@ namespace AvColSportsHire.Models
             Maintanence
         }
 
-
+        public ICollection<BookEquipment> BookEquipments { get; set; }
 
     }
 }   

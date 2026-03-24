@@ -33,8 +33,10 @@ namespace AvColSportsHire.Models
             Completed,
             Rescheduled
         }
+        [ForeignKey("CustomerId")]
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
+        [ForeignKey("OrganizationId")]
         public int? OrganizationId { get; set; }
         public Organization Organization { get; set; }
         public int StaffId { get; set; }
@@ -43,7 +45,7 @@ namespace AvColSportsHire.Models
         public Location Location { get; set; }
         [DataType(DataType.DateTime)]
         [Column(TypeName = "datetime2")]
-        public int CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         [Required]
         [Range(1, int.MaxValue)]
         [Display(Name = "Total Participants")]
@@ -51,5 +53,9 @@ namespace AvColSportsHire.Models
         [Column(TypeName = "decimal(10,2)")]
         public decimal Amount { get; set; }
         public Payments Payment { get; set; }
+
+        public ICollection<BookEquipment> BookEquipments { get; set; }
+        public ICollection<Payments> Payments { get; set; }
+
     }
 }
