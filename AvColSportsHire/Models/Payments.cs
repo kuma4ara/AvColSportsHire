@@ -9,10 +9,13 @@ namespace AvColSportsHire.Models
         public int PaymentId { get; set; }
         [ForeignKey("BookingId")]
         public int BookingId { get; set; }
-        public Booking Booking { get; set; }
         [Column(TypeName = "decimal(10,2)")]
         [ForeignKey("Amount")]
         public decimal Amount { get; set; }
+        [DataType(DataType.DateTime)]
+        [Column(TypeName = "datetime2")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime PaymentDateTime { get; set; } = DateTime.Now;
         public enum PaymentMethod
         {
             Card,
@@ -30,5 +33,8 @@ namespace AvColSportsHire.Models
         [StringLength(150)]
         [Display(Name = "Transaction Reference")]
         public string? TransactionReference { get; set; }
+
+        //Navigation properties
+        public Booking Booking { get; set; }
     }
 }

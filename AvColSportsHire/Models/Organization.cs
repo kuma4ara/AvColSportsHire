@@ -23,5 +23,8 @@ namespace AvColSportsHire.Models
         public bool IsInternal { get; set; }
         public bool IsActive { get; set; }
 
+        //Navigation properties
+        public ICollection<Customer> Customers { get; set; }
+
     }
 }

@@ -8,7 +8,6 @@ namespace AvColSportsHire.Models
 
         public int CustomerId { get; set; }
         public int? OrganizationId { get; set; }
-        public Organization Organization { get; set; }
         [Required]
         [StringLength(100)]
         [Display(Name = "First Name")]
@@ -20,13 +19,20 @@ namespace AvColSportsHire.Models
         [Required]
         [StringLength(150)]
         public string Email { get; set; }
-        public string FullName => $"{FirstName} {LastName}";
+        public string FullName
+        {
+            get { return $"{FirstName} {LastName}"; }
+        }
         [StringLength(20)]
         public string? Phone { get; set; }
         [Required]
         [StringLength(255)]
         public string PasswordHash { get; set; }
         public bool IsActive { get; set; }
-       
+
+        //Navigation properties
+        public Organization Organization { get; set; }
+        public ICollection <Booking> Bookings { get; set; }
+
     }
 }

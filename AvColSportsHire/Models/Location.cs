@@ -17,12 +17,15 @@ namespace AvColSportsHire.Models
         [Required]
         [Column (TypeName = "decimal(10,2)")]
         public decimal HourlyRate { get; set; }
-        public enum Condition
+        public enum ConditionStatus
         {
             Availiable,
             Booked,
             Damaged,
             Maintanence
         }
+
+        //Navigation properties
+        public ICollection<Booking> Bookings { get; set; }
     }
 }

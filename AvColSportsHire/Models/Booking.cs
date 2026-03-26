@@ -14,6 +14,10 @@ namespace AvColSportsHire.Models
         [Column(TypeName = "datetime2")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime StartDateTime { get; set; }
+        [DataType(DataType.DateTime)]
+        [Column(TypeName = "datetime2")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime EndDateTime { get; set; }
         public enum EventType
         {
             Training,
@@ -35,27 +39,28 @@ namespace AvColSportsHire.Models
         }
         [ForeignKey("CustomerId")]
         public int CustomerId { get; set; }
-        public Customer Customer { get; set; }
-        [ForeignKey("OrganizationId")]
-        public int? OrganizationId { get; set; }
-        public Organization Organization { get; set; }
         public int StaffId { get; set; }
-        public Staff Staff { get; set; }
         public int LocationId { get; set; }
-        public Location Location { get; set; }
         [DataType(DataType.DateTime)]
         [Column(TypeName = "datetime2")]
-        public DateTime CreatedAt { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         [Required]
         [Range(1, int.MaxValue)]
         [Display(Name = "Total Participants")]
         public int TotalParticiants { get; set; }
         [Column(TypeName = "decimal(10,2)")]
         public decimal Amount { get; set; }
-        public Payments Payment { get; set; }
 
+        //Navigation properties
+        public Location Location { get; set; }
+        public Staff Staff { get; set; }
+        public Customer Customer { get; set; }
+
+        public ICollection <BookingHistory> BookingHistories { get; set; }
         public ICollection<BookEquipment> BookEquipments { get; set; }
         public ICollection<Payments> Payments { get; set; }
+
 
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AvColSportsHire.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace AvColSportsHire.Areas.Identity.Data;
@@ -12,6 +13,10 @@ public class SportsHireUser : IdentityUser
     public int UserId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    
+    public bool IsStaff { get; set; }
+    public Staff Staff { get; set; }
+
+   
+
 }
 

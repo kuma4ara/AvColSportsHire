@@ -17,7 +17,10 @@ namespace AvColSportsHire.Models
         [Required]
         [StringLength(150)]
         public string Email { get; set; }
-        public string FullName => $"{FirstName} {LastName}";
+        public string FullName
+        {
+            get { return $"{FirstName} {LastName}"; }
+        }
         [StringLength(20)]
         public string? Phone { get; set; }
         public enum Role
@@ -31,6 +34,10 @@ namespace AvColSportsHire.Models
         [StringLength(255)]
         public string PasswordHash { get; set; }
         public bool IsActive { get; set; }
+
+        //Navigation properties
+        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<BookingHistory> BookingHistories { get; set; }
 
     }
 }

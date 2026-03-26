@@ -17,7 +17,7 @@ namespace AvColSportsHire.Models
         [MinLength(0)]
         [Display(Name = "Quantity Available")]
         public int QuantityAvailable { get; set; }
-        public enum Condition
+        public enum ConditionStatus
         {
             Availiable,
             Booked,
@@ -25,6 +25,7 @@ namespace AvColSportsHire.Models
             Maintanence
         }
 
+        //Navigation properties
         public ICollection<BookEquipment> BookEquipments { get; set; }
 
     }

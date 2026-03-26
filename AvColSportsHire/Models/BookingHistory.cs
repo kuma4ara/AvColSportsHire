@@ -7,7 +7,6 @@ namespace AvColSportsHire.Models
     {
         public int HistoryId { get; set; }
         public int BookingId { get; set; }
-        public Booking Booking { get; set; }
         [DataType(DataType.DateTime)]
         [Column(TypeName = "datetime2")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
@@ -19,14 +18,15 @@ namespace AvColSportsHire.Models
         [Required]
         [Display(Name = "Changed By")]
         public int ChangedByStaffId { get; set; }
-        public Staff Staff { get; set; }
         [StringLength(200)]
-        public string? Reason { get; set; }
+        public string Reason { get; set; }
         [DataType(DataType.DateTime)]
         [Column(TypeName = "datetime2")]
         public DateTime? ChangedAt { get; set; } = DateTime.Now;
 
-        public ICollection<Booking> Bookings { get; set; }
+        //Navigation properties
+        public Booking Booking { get; set; }
+        public Staff Staff { get; set; }
     }
 
 }
