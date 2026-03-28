@@ -57,7 +57,7 @@ namespace AvColSportsHire.Models
         public Staff Staff { get; set; }
         public Customer Customer { get; set; }
 
-        public ICollection <BookingHistory> BookingHistories { get; set; }
+        public ICollection <BookingHistory> History { get; set; }
         public ICollection<BookEquipment> BookEquipments { get; set; }
         public ICollection<Payments> Payments { get; set; }
 

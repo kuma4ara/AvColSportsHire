@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Identity\Data\SQL\**" />
+    <Content Remove="Areas\Identity\Data\SQL\**" />
+    <EmbeddedResource Remove="Areas\Identity\Data\SQL\**" />
+    <None Remove="Areas\Identity\Data\SQL\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
@@ -18,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Identity\Data\SQL\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

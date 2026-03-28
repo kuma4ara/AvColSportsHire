@@ -26,6 +26,7 @@ namespace AvColSportsHire.Models
 
         //Navigation properties
         public Booking Booking { get; set; }
+        [ForeignKey("ChangedByStaffId")]
         public Staff Staff { get; set; }
     }
 

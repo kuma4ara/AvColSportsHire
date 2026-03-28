@@ -1,11 +1,16 @@
 ﻿using AvColSportsHire.Areas.Identity.Data;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvColSportsHire.Models
 {
-    public class Staff : SportsHireUser
+    public class Staff
     {
+        [Key]
         public int StaffId { get; set; }
+        [MaxLength(450)]
+        [Column(TypeName = "nvarchar(450)")]
+        public string UserId { get; set; }
         [Required]
         [StringLength(100)]
         [Display(Name = "First Name")]
@@ -36,6 +41,8 @@ namespace AvColSportsHire.Models
         public bool IsActive { get; set; }
 
         //Navigation properties
+        [ForeignKey("UserId")]
+        public SportsHireUser User { get; set; }
         public ICollection<Booking> Bookings { get; set; }
         public ICollection<BookingHistory> BookingHistories { get; set; }
 
