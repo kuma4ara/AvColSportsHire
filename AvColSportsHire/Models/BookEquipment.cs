@@ -7,6 +7,7 @@ namespace AvColSportsHire.Models
     public class BookEquipment
     {
         [Required]
+        public int BookEquipId { get; set; }
         public int BookingId { get; set; }
         public int EquipmentId { get; set; }
         [Display(Name = "Quantity Available")]

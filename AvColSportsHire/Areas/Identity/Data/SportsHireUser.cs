@@ -14,7 +14,6 @@ public class SportsHireUser : IdentityUser
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public bool IsStaff { get; set; }
-    public Staff Staff { get; set; }
 
    
 
