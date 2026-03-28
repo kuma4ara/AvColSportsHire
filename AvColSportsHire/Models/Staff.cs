@@ -37,7 +37,6 @@ namespace AvColSportsHire.Models
         }
         [Required]
         [StringLength(255)]
-        public string PasswordHash { get; set; }
         public bool IsActive { get; set; }
 
         //Navigation properties

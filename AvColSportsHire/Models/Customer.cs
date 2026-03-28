@@ -31,7 +31,6 @@ namespace AvColSportsHire.Models
         public string? Phone { get; set; }
         [Required]
         [StringLength(255)]
-        public string PasswordHash { get; set; }
         public bool IsActive { get; set; }
 
         //Navigation properties

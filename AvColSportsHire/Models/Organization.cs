@@ -19,7 +19,6 @@ namespace AvColSportsHire.Models
         public string? Contact_Phone { get; set; }
         [Required]
         [StringLength(255)]
-        public string PasswordHash { get; set; }
         public bool IsInternal { get; set; }
         public bool IsActive { get; set; }
 
