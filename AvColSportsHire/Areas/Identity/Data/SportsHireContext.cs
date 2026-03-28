@@ -32,4 +32,16 @@ public class SportsHireContext : IdentityDbContext<SportsHireUser>
     }
 
 public DbSet<AvColSportsHire.Models.BookEquipment> BookEquipment { get; set; } = default!;
+
+public DbSet<AvColSportsHire.Models.Booking> Booking { get; set; } = default!;
+
+public DbSet<AvColSportsHire.Models.BookingHistory> BookingHistory { get; set; } = default!;
+
+public DbSet<AvColSportsHire.Models.Equipment> Equipment { get; set; } = default!;
+
+public DbSet<AvColSportsHire.Models.Location> Location { get; set; } = default!;
+
+public DbSet<AvColSportsHire.Models.Organization> Organization { get; set; } = default!;
+
+public DbSet<AvColSportsHire.Models.Payments> Payments { get; set; } = default!;
 }
