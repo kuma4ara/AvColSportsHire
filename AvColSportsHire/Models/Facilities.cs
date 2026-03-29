@@ -35,6 +35,7 @@ namespace AvColSportsHire.Models
         }
 
         //Navigation properties
+        public ConditionStatus Condition { get; set; }
         public ICollection<Booking>? Bookings { get; set; }
     }
 }

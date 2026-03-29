@@ -82,6 +82,8 @@ namespace AvColSportsHire.Models
         public int TotalParticiants { get; set; }
 
         //Navigation properties
+        public EventType? Event { get; set; }
+        public BookingStatus? Status { get; set; }
         public Facilities? Facilities { get; set; }
         public SportsHireUser? SportsHireUser { get; set; }
 
