@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using AvColSportsHire.Models;
@@ -10,11 +12,29 @@ namespace AvColSportsHire.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the SportsHireUser class
 public class SportsHireUser : IdentityUser
 {
-    public string FirstName { get; set; }
+    [Key]
+    public int UserId { get; set; }
+
+    [ForeignKey("OrganizationId")]
+    public int? OrganizationId { get; set; }
+    public Organization? Organization { get; set; }
+
+    //User Last name field with several validation rules, an error message will display if at least one validation rule is not complied with (e.g., as per the regular expression the name must only have letters in it).
+    [Required, MinLength(2), MaxLength(20), RegularExpression(@"^[A-Z][a-z\s]*$", ErrorMessage = "Last name must start with a capital letter and only contain letters, no special characters or spaces.")]
+    [Display(Name = "Last Name")]
     public string LastName { get; set; }
 
-    //Navigation properties
-    public Staff Staff { get; set; }
-    public Customer Customer { get; set; }
+    //User First name field with several validation rules, an error message will display if at least one validation rule is not complied with (e.g., as per the regular expression the name must only have letters in it).
+    [Required, MinLength(2), MaxLength(20), RegularExpression(@"^[A-Z][a-z\s]*$", ErrorMessage = "Last name must start with a capital letter and only contain letters, no special characters or spaces.")]
+    [Display(Name = "First Name")]
+    public string FirstName { get; set; }
+
+    //User Phone Number field with validation rules, an error message will display if the regular expression (standard NZ phone number) format is not met.
+    [Required, RegularExpression(@"^\+?\d{1,3}[- ]?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$", ErrorMessage = "Invalid phone number format (please include +64)")]
+    public string Phone { get; set; }
+
+    //List representing a one to many relationship - one user can make many bookings.
+    public ICollection<Booking>? Bookings { get; set; }
+     
 }
 

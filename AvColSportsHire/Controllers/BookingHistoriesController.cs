@@ -22,7 +22,7 @@ namespace AvColSportsHire.Controllers
         // GET: BookingHistories
         public async Task<IActionResult> Index()
         {
-            var sportsHireContext = _context.BookingHistory.Include(b => b.Booking).Include(b => b.Staff);
+            var sportsHireContext = _context.BookingHistory.Include(b => b.Booking);
             return View(await sportsHireContext.ToListAsync());
         }
 
@@ -36,7 +36,6 @@ namespace AvColSportsHire.Controllers
 
             var bookingHistory = await _context.BookingHistory
                 .Include(b => b.Booking)
-                .Include(b => b.Staff)
                 .FirstOrDefaultAsync(m => m.HistoryId == id);
             if (bookingHistory == null)
             {
@@ -50,7 +49,6 @@ namespace AvColSportsHire.Controllers
         public IActionResult Create()
         {
             ViewData["BookingId"] = new SelectList(_context.Bookings, "BookingId", "BookingReference");
-            ViewData["ChangedByStaffId"] = new SelectList(_context.Staff, "StaffId", "Email");
             return View();
         }
 
@@ -59,16 +57,25 @@ namespace AvColSportsHire.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("HistoryId,BookingId,OldStartDateTime,OldEndDateTime,ChangedByStaffId,Reason,ChangedAt")] BookingHistory bookingHistory)
+        public async Task<IActionResult> Create([Bind("HistoryId,BookingId,OldStartDateTime,OldEndDateTime,Reason,ChangedAt")] BookingHistory bookingHistory)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(bookingHistory);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    if (ModelState.IsValid)
+                {
+                    _context.Add(bookingHistory);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
             }
             ViewData["BookingId"] = new SelectList(_context.Bookings, "BookingId", "BookingReference", bookingHistory.BookingId);
-            ViewData["ChangedByStaffId"] = new SelectList(_context.Staff, "StaffId", "Email", bookingHistory.ChangedByStaffId);
             return View(bookingHistory);
         }
 
@@ -86,7 +93,6 @@ namespace AvColSportsHire.Controllers
                 return NotFound();
             }
             ViewData["BookingId"] = new SelectList(_context.Bookings, "BookingId", "BookingReference", bookingHistory.BookingId);
-            ViewData["ChangedByStaffId"] = new SelectList(_context.Staff, "StaffId", "Email", bookingHistory.ChangedByStaffId);
             return View(bookingHistory);
         }
 
@@ -95,7 +101,7 @@ namespace AvColSportsHire.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("HistoryId,BookingId,OldStartDateTime,OldEndDateTime,ChangedByStaffId,Reason,ChangedAt")] BookingHistory bookingHistory)
+        public async Task<IActionResult> Edit(int id, [Bind("HistoryId,BookingId,OldStartDateTime,OldEndDateTime,Reason,ChangedAt")] BookingHistory bookingHistory)
         {
             if (id != bookingHistory.HistoryId)
             {
@@ -123,7 +129,6 @@ namespace AvColSportsHire.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BookingId"] = new SelectList(_context.Bookings, "BookingId", "BookingReference", bookingHistory.BookingId);
-            ViewData["ChangedByStaffId"] = new SelectList(_context.Staff, "StaffId", "Email", bookingHistory.ChangedByStaffId);
             return View(bookingHistory);
         }
 
@@ -137,7 +142,6 @@ namespace AvColSportsHire.Controllers
 
             var bookingHistory = await _context.BookingHistory
                 .Include(b => b.Booking)
-                .Include(b => b.Staff)
                 .FirstOrDefaultAsync(m => m.HistoryId == id);
             if (bookingHistory == null)
             {

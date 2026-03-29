@@ -1,29 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AvColSportsHire.Areas.Identity.Data;
+using AvColSportsHire.Models;
+using AvColSportsHire.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AvColSportsHire.Areas.Identity.Data;
-using AvColSportsHire.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AvColSportsHire.Controllers
 {
     public class BookingsController : Controller
-    {
+    {   
         private readonly SportsHireContext _context;
+        private readonly BookingReferenceService _refService;
 
-        public BookingsController(SportsHireContext context)
+        public BookingsController(SportsHireContext context, BookingReferenceService refService)
         {
             _context = context;
+            _refService = refService;
         }
 
         // GET: Bookings
         public async Task<IActionResult> Index()
         {
-            var sportsHireContext = _context.Bookings.Include(b => b.Customer).Include(b => b.Location).Include(b => b.Staff);
-            return View(await sportsHireContext.ToListAsync());
+            return View(await _context.Bookings.ToListAsync());
         }
 
         // GET: Bookings/Details/5
@@ -35,9 +37,6 @@ namespace AvColSportsHire.Controllers
             }
 
             var booking = await _context.Bookings
-                .Include(b => b.Customer)
-                .Include(b => b.Location)
-                .Include(b => b.Staff)
                 .FirstOrDefaultAsync(m => m.BookingId == id);
             if (booking == null)
             {
@@ -50,9 +49,6 @@ namespace AvColSportsHire.Controllers
         // GET: Bookings/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "Email");
-            ViewData["LocationId"] = new SelectList(_context.Location, "LocationId", "Description");
-            ViewData["StaffId"] = new SelectList(_context.Staff, "StaffId", "Email");
             return View();
         }
 
@@ -61,18 +57,29 @@ namespace AvColSportsHire.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookingId,BookingReference,StartDateTime,EndDateTime,OtherEventTypeDescription,CustomerId,StaffId,LocationId,CreatedAt,TotalParticiants,Amount")] Booking booking)
+        public async Task<IActionResult> Create([Bind("BookingId,UserId,BookingReference,BookingDate,StartTime,EndTime,OtherEventTypeDescription,FacilityId,CreatedAt,TotalParticiants")] Booking booking)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    if (ModelState.IsValid)
+                {
+                    booking.BookingReference = _refService.GenerateReference();
+
+                    _context.Add(booking);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
+                }
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "Email", booking.CustomerId);
-            ViewData["LocationId"] = new SelectList(_context.Location, "LocationId", "Description", booking.LocationId);
-            ViewData["StaffId"] = new SelectList(_context.Staff, "StaffId", "Email", booking.StaffId);
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
             return View(booking);
+
         }
 
         // GET: Bookings/Edit/5
@@ -88,9 +95,6 @@ namespace AvColSportsHire.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "Email", booking.CustomerId);
-            ViewData["LocationId"] = new SelectList(_context.Location, "LocationId", "Description", booking.LocationId);
-            ViewData["StaffId"] = new SelectList(_context.Staff, "StaffId", "Email", booking.StaffId);
             return View(booking);
         }
 
@@ -99,7 +103,7 @@ namespace AvColSportsHire.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookingId,BookingReference,StartDateTime,EndDateTime,OtherEventTypeDescription,CustomerId,StaffId,LocationId,CreatedAt,TotalParticiants,Amount")] Booking booking)
+        public async Task<IActionResult> Edit(int id, [Bind("BookingId,UserId,BookingReference,BookingDate,StartTime,EndTime,OtherEventTypeDescription,FacilityId,CreatedAt,TotalParticiants")] Booking booking)
         {
             if (id != booking.BookingId)
             {
@@ -126,9 +130,6 @@ namespace AvColSportsHire.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "Email", booking.CustomerId);
-            ViewData["LocationId"] = new SelectList(_context.Location, "LocationId", "Description", booking.LocationId);
-            ViewData["StaffId"] = new SelectList(_context.Staff, "StaffId", "Email", booking.StaffId);
             return View(booking);
         }
 
@@ -141,9 +142,6 @@ namespace AvColSportsHire.Controllers
             }
 
             var booking = await _context.Bookings
-                .Include(b => b.Customer)
-                .Include(b => b.Location)
-                .Include(b => b.Staff)
                 .FirstOrDefaultAsync(m => m.BookingId == id);
             if (booking == null)
             {

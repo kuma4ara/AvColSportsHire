@@ -10,22 +10,22 @@ using AvColSportsHire.Models;
 
 namespace AvColSportsHire.Controllers
 {
-    public class EquipmentsController : Controller
+    public class FacilitiesController : Controller
     {
         private readonly SportsHireContext _context;
 
-        public EquipmentsController(SportsHireContext context)
+        public FacilitiesController(SportsHireContext context)
         {
             _context = context;
         }
 
-        // GET: Equipments
+        // GET: Facilities
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Equipments.ToListAsync());
+            return View(await _context.Facilities.ToListAsync());
         }
 
-        // GET: Equipments/Details/5
+        // GET: Facilities/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,49 @@ namespace AvColSportsHire.Controllers
                 return NotFound();
             }
 
-            var equipment = await _context.Equipments
-                .FirstOrDefaultAsync(m => m.EquipmentId == id);
-            if (equipment == null)
+            var facilities = await _context.Facilities
+                .FirstOrDefaultAsync(m => m.FacilityId == id);
+            if (facilities == null)
             {
                 return NotFound();
             }
 
-            return View(equipment);
+            return View(facilities);
         }
 
-        // GET: Equipments/Create
+        // GET: Facilities/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Equipments/Create
+        // POST: Facilities/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EquipmentId,Name,Type,QuantityAvailable")] Equipment equipment)
+        public async Task<IActionResult> Create([Bind("FacilityId,Name,Type,Description,HourlyRate")] Facilities facilities)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(equipment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    if (ModelState.IsValid)
+                {
+                    _context.Add(facilities);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            return View(equipment);
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
+            return View(facilities);
         }
 
-        // GET: Equipments/Edit/5
+        // GET: Facilities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +83,22 @@ namespace AvColSportsHire.Controllers
                 return NotFound();
             }
 
-            var equipment = await _context.Equipments.FindAsync(id);
-            if (equipment == null)
+            var facilities = await _context.Facilities.FindAsync(id);
+            if (facilities == null)
             {
                 return NotFound();
             }
-            return View(equipment);
+            return View(facilities);
         }
 
-        // POST: Equipments/Edit/5
+        // POST: Facilities/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("EquipmentId,Name,Type,QuantityAvailable")] Equipment equipment)
+        public async Task<IActionResult> Edit(int id, [Bind("FacilityId,Name,Type,Description,HourlyRate")] Facilities facilities)
         {
-            if (id != equipment.EquipmentId)
+            if (id != facilities.FacilityId)
             {
                 return NotFound();
             }
@@ -97,12 +107,12 @@ namespace AvColSportsHire.Controllers
             {
                 try
                 {
-                    _context.Update(equipment);
+                    _context.Update(facilities);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EquipmentExists(equipment.EquipmentId))
+                    if (!FacilitiesExists(facilities.FacilityId))
                     {
                         return NotFound();
                     }
@@ -113,10 +123,10 @@ namespace AvColSportsHire.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(equipment);
+            return View(facilities);
         }
 
-        // GET: Equipments/Delete/5
+        // GET: Facilities/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +134,34 @@ namespace AvColSportsHire.Controllers
                 return NotFound();
             }
 
-            var equipment = await _context.Equipments
-                .FirstOrDefaultAsync(m => m.EquipmentId == id);
-            if (equipment == null)
+            var facilities = await _context.Facilities
+                .FirstOrDefaultAsync(m => m.FacilityId == id);
+            if (facilities == null)
             {
                 return NotFound();
             }
 
-            return View(equipment);
+            return View(facilities);
         }
 
-        // POST: Equipments/Delete/5
+        // POST: Facilities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var equipment = await _context.Equipments.FindAsync(id);
-            if (equipment != null)
+            var facilities = await _context.Facilities.FindAsync(id);
+            if (facilities != null)
             {
-                _context.Equipments.Remove(equipment);
+                _context.Facilities.Remove(facilities);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EquipmentExists(int? id)
+        private bool FacilitiesExists(int id)
         {
-            return _context.Equipments.Any(e => e.EquipmentId == id);
+            return _context.Facilities.Any(e => e.FacilityId == id);
         }
     }
 }

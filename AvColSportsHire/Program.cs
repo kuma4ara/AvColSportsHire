@@ -1,10 +1,13 @@
+using AvColSportsHire.Areas.Identity.Data;
+using AvColSportsHire.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using AvColSportsHire.Areas.Identity.Data;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("SportsHireContextConnection") ?? throw new InvalidOperationException("Connection string 'SportsHireContextConnection' not found.");;
 
 builder.Services.AddDbContext<SportsHireContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<BookingReferenceService>();
 
 builder.Services.AddDefaultIdentity<SportsHireUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<SportsHireContext>();
 

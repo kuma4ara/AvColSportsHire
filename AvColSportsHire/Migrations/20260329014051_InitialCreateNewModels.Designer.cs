@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvColSportsHire.Migrations
 {
     [DbContext(typeof(SportsHireContext))]
-    [Migration("20260328045620_DeletePassHashNorm")]
-    partial class DeletePassHashNorm
+    [Migration("20260329014051_InitialCreateNewModels")]
+    partial class InitialCreateNewModels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,11 +46,13 @@ namespace AvColSportsHire.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -66,7 +68,14 @@ namespace AvColSportsHire.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -80,6 +89,9 @@ namespace AvColSportsHire.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -95,33 +107,9 @@ namespace AvColSportsHire.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("OrganizationId");
+
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.BookEquipment", b =>
-                {
-                    b.Property<int>("BookEquipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookEquipId"));
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuantityBooked")
-                        .HasColumnType("int");
-
-                    b.HasKey("BookEquipId");
-
-                    b.HasIndex("BookingId");
-
-                    b.HasIndex("EquipmentId");
-
-                    b.ToTable("BookEquipment");
                 });
 
             modelBuilder.Entity("AvColSportsHire.Models.Booking", b =>
@@ -132,8 +120,8 @@ namespace AvColSportsHire.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"));
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("BookingReference")
                         .IsRequired()
@@ -143,13 +131,13 @@ namespace AvColSportsHire.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndDateTime")
+                    b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int?>("FacilitiesFacilityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FacilityId")
                         .HasColumnType("int");
 
                     b.Property<string>("OtherEventTypeDescription")
@@ -157,24 +145,29 @@ namespace AvColSportsHire.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("StaffId")
-                        .HasColumnType("int");
+                    b.Property<string>("SportsHireUserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("StartDateTime")
+                    b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("TotalParticiants")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("BookingId");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("BookingReference")
+                        .IsUnique();
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("FacilitiesFacilityId");
 
-                    b.HasIndex("StaffId");
+                    b.HasIndex("SportsHireUserId");
 
-                    b.ToTable("Booking");
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("AvColSportsHire.Models.BookingHistory", b =>
@@ -188,11 +181,8 @@ namespace AvColSportsHire.Migrations
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ChangedAt")
+                    b.Property<DateTime>("ChangedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ChangedByStaffId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("OldEndDateTime")
                         .HasColumnType("datetime2");
@@ -205,102 +195,20 @@ namespace AvColSportsHire.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int?>("StaffId")
-                        .HasColumnType("int");
-
                     b.HasKey("HistoryId");
 
                     b.HasIndex("BookingId");
 
-                    b.HasIndex("ChangedByStaffId");
-
-                    b.HasIndex("StaffId");
-
                     b.ToTable("BookingHistory");
                 });
 
-            modelBuilder.Entity("AvColSportsHire.Models.Customer", b =>
+            modelBuilder.Entity("AvColSportsHire.Models.Facilities", b =>
                 {
-                    b.Property<int>("CustomerId")
+                    b.Property<int>("FacilityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsActive")
-                        .HasMaxLength(255)
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("OrganizationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CustomerId");
-
-                    b.HasIndex("OrganizationId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Customer");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Equipment", b =>
-                {
-                    b.Property<int>("EquipmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EquipmentId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("QuantityAvailable")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("EquipmentId");
-
-                    b.ToTable("Equipment");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Location", b =>
-                {
-                    b.Property<int>("LocationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LocationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacilityId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -315,9 +223,14 @@ namespace AvColSportsHire.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.HasKey("LocationId");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
-                    b.ToTable("Location");
+                    b.HasKey("FacilityId");
+
+                    b.ToTable("Facilities");
                 });
 
             modelBuilder.Entity("AvColSportsHire.Models.Organization", b =>
@@ -342,10 +255,9 @@ namespace AvColSportsHire.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsInternal")
-                        .HasMaxLength(255)
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("OrgName")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
@@ -353,82 +265,6 @@ namespace AvColSportsHire.Migrations
                     b.HasKey("OrganizationId");
 
                     b.ToTable("Organization");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Payments", b =>
-                {
-                    b.Property<int>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PaymentDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TransactionReference")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.HasKey("PaymentId");
-
-                    b.HasIndex("BookingId");
-
-                    b.ToTable("Payments");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Staff", b =>
-                {
-                    b.Property<int>("StaffId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffId"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("StaffId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Staff");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -568,50 +404,28 @@ namespace AvColSportsHire.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AvColSportsHire.Models.BookEquipment", b =>
+            modelBuilder.Entity("AvColSportsHire.Areas.Identity.Data.SportsHireUser", b =>
                 {
-                    b.HasOne("AvColSportsHire.Models.Booking", "Booking")
-                        .WithMany("BookEquipments")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("AvColSportsHire.Models.Organization", "Organization")
+                        .WithMany("AppUser")
+                        .HasForeignKey("OrganizationId");
 
-                    b.HasOne("AvColSportsHire.Models.Equipment", "Equipment")
-                        .WithMany("BookEquipments")
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("Equipment");
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("AvColSportsHire.Models.Booking", b =>
                 {
-                    b.HasOne("AvColSportsHire.Models.Customer", "Customer")
+                    b.HasOne("AvColSportsHire.Models.Facilities", "Facilities")
                         .WithMany("Bookings")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("FacilitiesFacilityId");
 
-                    b.HasOne("AvColSportsHire.Models.Location", "Location")
+                    b.HasOne("AvColSportsHire.Areas.Identity.Data.SportsHireUser", "SportsHireUser")
                         .WithMany("Bookings")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SportsHireUserId");
 
-                    b.HasOne("AvColSportsHire.Models.Staff", "Staff")
-                        .WithMany("Bookings")
-                        .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Facilities");
 
-                    b.Navigation("Customer");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Staff");
+                    b.Navigation("SportsHireUser");
                 });
 
             modelBuilder.Entity("AvColSportsHire.Models.BookingHistory", b =>
@@ -622,58 +436,7 @@ namespace AvColSportsHire.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AvColSportsHire.Models.Staff", "Staff")
-                        .WithMany()
-                        .HasForeignKey("ChangedByStaffId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("AvColSportsHire.Models.Staff", null)
-                        .WithMany("BookingHistories")
-                        .HasForeignKey("StaffId");
-
                     b.Navigation("Booking");
-
-                    b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Customer", b =>
-                {
-                    b.HasOne("AvColSportsHire.Models.Organization", "Organization")
-                        .WithMany("Customers")
-                        .HasForeignKey("OrganizationId");
-
-                    b.HasOne("AvColSportsHire.Areas.Identity.Data.SportsHireUser", "User")
-                        .WithOne("Customer")
-                        .HasForeignKey("AvColSportsHire.Models.Customer", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Organization");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Payments", b =>
-                {
-                    b.HasOne("AvColSportsHire.Models.Booking", "Booking")
-                        .WithMany("Payments")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Staff", b =>
-                {
-                    b.HasOne("AvColSportsHire.Areas.Identity.Data.SportsHireUser", "User")
-                        .WithOne("Staff")
-                        .HasForeignKey("AvColSportsHire.Models.Staff", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -729,47 +492,22 @@ namespace AvColSportsHire.Migrations
 
             modelBuilder.Entity("AvColSportsHire.Areas.Identity.Data.SportsHireUser", b =>
                 {
-                    b.Navigation("Customer")
-                        .IsRequired();
-
-                    b.Navigation("Staff")
-                        .IsRequired();
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("AvColSportsHire.Models.Booking", b =>
                 {
-                    b.Navigation("BookEquipments");
-
                     b.Navigation("History");
-
-                    b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("AvColSportsHire.Models.Customer", b =>
-                {
-                    b.Navigation("Bookings");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Equipment", b =>
-                {
-                    b.Navigation("BookEquipments");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Location", b =>
+            modelBuilder.Entity("AvColSportsHire.Models.Facilities", b =>
                 {
                     b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("AvColSportsHire.Models.Organization", b =>
                 {
-                    b.Navigation("Customers");
-                });
-
-            modelBuilder.Entity("AvColSportsHire.Models.Staff", b =>
-                {
-                    b.Navigation("BookingHistories");
-
-                    b.Navigation("Bookings");
+                    b.Navigation("AppUser");
                 });
 #pragma warning restore 612, 618
         }

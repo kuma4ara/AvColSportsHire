@@ -10,23 +10,22 @@ using AvColSportsHire.Models;
 
 namespace AvColSportsHire.Controllers
 {
-    public class PaymentsController : Controller
+    public class OrganizationsController : Controller
     {
         private readonly SportsHireContext _context;
 
-        public PaymentsController(SportsHireContext context)
+        public OrganizationsController(SportsHireContext context)
         {
             _context = context;
         }
 
-        // GET: Payments
+        // GET: Organizations
         public async Task<IActionResult> Index()
         {
-            var sportsHireContext = _context.Payments.Include(p => p.Booking);
-            return View(await sportsHireContext.ToListAsync());
+            return View(await _context.Organization.ToListAsync());
         }
 
-        // GET: Payments/Details/5
+        // GET: Organizations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +33,50 @@ namespace AvColSportsHire.Controllers
                 return NotFound();
             }
 
-            var payments = await _context.Payments
-                .Include(p => p.Booking)
-                .FirstOrDefaultAsync(m => m.PaymentId == id);
-            if (payments == null)
+            var organization = await _context.Organization
+                .FirstOrDefaultAsync(m => m.OrganizationId == id);
+            if (organization == null)
             {
                 return NotFound();
             }
 
-            return View(payments);
+            return View(organization);
         }
 
-        // GET: Payments/Create
+        // GET: Organizations/Create
         public IActionResult Create()
         {
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "BookingId", "BookingReference");
             return View();
         }
 
-        // POST: Payments/Create
+        // POST: Organizations/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PaymentId,BookingId,Amount,PaymentDateTime,TransactionReference")] Payments payments)
+        public async Task<IActionResult> Create([Bind("OrganizationId,OrgName,Contact_Email,Contact_Phone,IsInternal,IsActive")] Organization organization)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(payments);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                    if (ModelState.IsValid)
+                {
+                    _context.Add(organization);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "BookingId", "BookingReference", payments.BookingId);
-            return View(payments);
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
+            return View(organization);
         }
 
-        // GET: Payments/Edit/5
+        // GET: Organizations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +84,22 @@ namespace AvColSportsHire.Controllers
                 return NotFound();
             }
 
-            var payments = await _context.Payments.FindAsync(id);
-            if (payments == null)
+            var organization = await _context.Organization.FindAsync(id);
+            if (organization == null)
             {
                 return NotFound();
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "BookingId", "BookingReference", payments.BookingId);
-            return View(payments);
+            return View(organization);
         }
 
-        // POST: Payments/Edit/5
+        // POST: Organizations/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PaymentId,BookingId,Amount,PaymentDateTime,TransactionReference")] Payments payments)
+        public async Task<IActionResult> Edit(int? id, [Bind("OrganizationId,OrgName,Contact_Email,Contact_Phone,IsInternal,IsActive")] Organization organization)
         {
-            if (id != payments.PaymentId)
+            if (id != organization.OrganizationId)
             {
                 return NotFound();
             }
@@ -102,12 +108,12 @@ namespace AvColSportsHire.Controllers
             {
                 try
                 {
-                    _context.Update(payments);
+                    _context.Update(organization);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PaymentsExists(payments.PaymentId))
+                    if (!OrganizationExists(organization.OrganizationId))
                     {
                         return NotFound();
                     }
@@ -118,11 +124,10 @@ namespace AvColSportsHire.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "BookingId", "BookingReference", payments.BookingId);
-            return View(payments);
+            return View(organization);
         }
 
-        // GET: Payments/Delete/5
+        // GET: Organizations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,35 +135,34 @@ namespace AvColSportsHire.Controllers
                 return NotFound();
             }
 
-            var payments = await _context.Payments
-                .Include(p => p.Booking)
-                .FirstOrDefaultAsync(m => m.PaymentId == id);
-            if (payments == null)
+            var organization = await _context.Organization
+                .FirstOrDefaultAsync(m => m.OrganizationId == id);
+            if (organization == null)
             {
                 return NotFound();
             }
 
-            return View(payments);
+            return View(organization);
         }
 
-        // POST: Payments/Delete/5
+        // POST: Organizations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var payments = await _context.Payments.FindAsync(id);
-            if (payments != null)
+            var organization = await _context.Organization.FindAsync(id);
+            if (organization != null)
             {
-                _context.Payments.Remove(payments);
+                _context.Organization.Remove(organization);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PaymentsExists(int id)
+        private bool OrganizationExists(int? id)
         {
-            return _context.Payments.Any(e => e.PaymentId == id);
+            return _context.Organization.Any(e => e.OrganizationId == id);
         }
     }
 }
