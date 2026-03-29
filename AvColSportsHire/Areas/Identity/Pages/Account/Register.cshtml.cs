@@ -71,6 +71,18 @@ namespace AvColSportsHire.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            //Custom fields, must follow multiple validation rules otherwise error message will display.
+
+            [Required, MinLength(2), MaxLength(20), RegularExpression(@"^[A-Z][a-z\s]*$", ErrorMessage = "Last name must start with a capital letter and only contain letters, no special characters or spaces.")]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Required, MinLength(2), MaxLength(20), RegularExpression(@"^[A-Z][a-z\s]*$", ErrorMessage = "First name must start with a capital letter and only contain letters, no special characters or spaces.")]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required, RegularExpression(@"^\+?\d{1,3}[- ]?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$", ErrorMessage = "Invalid phone number format (please include +64)")]
+            public string Phone { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -114,6 +126,10 @@ namespace AvColSportsHire.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+
+                user.LastName = Input.LastName;
+                user.FirstName = Input.FirstName;
+                user.Phone = Input.Phone;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

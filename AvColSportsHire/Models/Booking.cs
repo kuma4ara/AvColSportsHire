@@ -16,11 +16,10 @@ namespace AvColSportsHire.Models
         [Display(Name = "App User")]
         public string UserId { get; set; }
 
-        // BookingReference is an alphanumeric code that uniquely identifies a booking. It is required and must be exactly 6 characters long, ensuring that each booking can be easily referenced and tracked within the system.
-        [Required]
+        // BookingReference is an alphanumeric code that uniquely identifies a booking. It must be exactly 6 characters long, ensuring that each booking can be easily referenced and tracked within the system.
         [MinLength(12)]
         [MaxLength(12)]
-        public string BookingReference { get; set; }
+        public string? BookingReference { get; set; }
 
         //Date field is allocated the DataType annotation to allow only the date to be selected.
         [DataType(DataType.Date)]
@@ -76,6 +75,7 @@ namespace AvColSportsHire.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        // This section represents the total number of participants for a booking, it is required and must be between 1 and 1500, ensuring that the number of participants is reasonable and within the capacity limits of the facilities being booked.
         [Required(ErrorMessage = "State total number of Participants")]
         [Range(1, 1500)]
         [Display(Name = "Total Participants")]

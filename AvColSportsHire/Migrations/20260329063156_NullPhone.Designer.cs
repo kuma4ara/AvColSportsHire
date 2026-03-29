@@ -4,6 +4,7 @@ using AvColSportsHire.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvColSportsHire.Migrations
 {
     [DbContext(typeof(SportsHireContext))]
-    partial class SportsHireContextModelSnapshot : ModelSnapshot
+    [Migration("20260329063156_NullPhone")]
+    partial class NullPhone
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,6 +121,7 @@ namespace AvColSportsHire.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("BookingReference")
+                        .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
@@ -154,8 +158,7 @@ namespace AvColSportsHire.Migrations
                     b.HasKey("BookingId");
 
                     b.HasIndex("BookingReference")
-                        .IsUnique()
-                        .HasFilter("[BookingReference] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("FacilitiesFacilityId");
 

@@ -6,7 +6,8 @@ namespace AvColSportsHire.Models
 {
     public class Organization
     {
-        public int? OrganizationId { get; set; }
+        [Key]
+        public int OrganizationId { get; set; }
 
         [Required, RegularExpression(@"^[A-Z][a-zA-Z0-9 ]*$", ErrorMessage = "Organization name must start with a capital letter and only contain letters, no special characters.")]
         [MaxLength(150)]
@@ -17,7 +18,6 @@ namespace AvColSportsHire.Models
         [MaxLength(150)]
         public string Contact_Email { get; set; }
 
-        [Required]
         [MaxLength(20)]
         public string? Contact_Phone { get; set; }
 
@@ -25,6 +25,8 @@ namespace AvColSportsHire.Models
         [DisplayName("Is it an AvCol Team")]
         public bool IsInternal { get; set; }
 
+        [Required(ErrorMessage = "State if your Organization is still active")]
+        [DisplayName("Is Active")]
         public bool IsActive { get; set; }
 
         //Navigation properties

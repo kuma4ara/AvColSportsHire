@@ -65,6 +65,8 @@ namespace AvColSportsHire.Controllers
                 {
                     booking.BookingReference = _refService.GenerateReference();
 
+                    ModelState.Remove("BookingReference");
+
                     _context.Add(booking);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));

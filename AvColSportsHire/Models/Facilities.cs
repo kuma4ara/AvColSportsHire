@@ -24,6 +24,7 @@ namespace AvColSportsHire.Models
 
         [Required, RegularExpression(@"^[0-9]{2}\.[0-9]{2}$", ErrorMessage = "All hourly rates must be written as dd.cc format")]
         [Column (TypeName = "decimal(10,2)")]
+        [Display(Name = "Hourly Rate (NZD)")]
         public decimal HourlyRate { get; set; }
         public enum ConditionStatus
         {
